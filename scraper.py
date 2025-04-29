@@ -24,6 +24,19 @@ def extract_next_links(url, resp):
     try:
         content = resp.raw_response.content
         soup = BeautifulSoup(content, "html.parser")
+
+        text = soup.get_text(separator=' ', strip=True)
+        text_length = len(text)
+        html_length = len(content)
+        
+        if text_length < 20:
+            print(f"Dead page detected at {url}")
+            return links
+        
+        if text_length / max(html_length, 1) < 0.03: 
+            print(f"Low text density page detected at {url}")
+            return links
+
         for link in soup.find_all("a", href = True):
             href = link["href"]
             url = urljoin(resp.url, href)
@@ -43,6 +56,27 @@ def is_valid(url):
         parsed = urlparse(url)
         if parsed.scheme not in set(["http", "https"]):
             return False
+        if 'doku.php' in parsed.path:
+            return False
+        if len(url) > 300:
+            return False
+        if re.search(r'(calendar|date|year=\d{4}|month=\d{1,2})', url.lower()):
+            return False
+        if url.count('=') > 3:
+            return False
+        if 'uci.zoom.us' in parsed.netloc:
+            return False
+        if 'action=download' in parsed.query:
+            return False
+        if 'share=' in parsed.query:
+            return False
+        if 'ics.uci.edu' not in parsed.netloc:
+            if 'cs.uci.edu' not in parsed.netloc:
+                if 'informatics.uci.edu' not in parsed.netloc:
+                    if 'stat.uci.edu' not in parsed.netloc:
+                        if 'today.uci.edu/department/information_computer_sciences' not in parsed.netloc:
+                            return False
+        
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
