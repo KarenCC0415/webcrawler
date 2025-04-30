@@ -40,7 +40,8 @@ def extract_next_links(url, resp):
         for link in soup.find_all("a", href = True):
             href = link["href"]
             url = urljoin(resp.url, href)
-            links.append(url)
+            if is_valid(url):
+                links.append(url)
     
     except Exception as e:
         print(f"Error while parsing {e}")
@@ -69,6 +70,14 @@ def is_valid(url):
         if 'action=download' in parsed.query:
             return False
         if 'share=' in parsed.query:
+            return False
+        if 'login.php' in parsed.path:
+            return False
+        if 'respond' in parsed.fragment:
+            return False
+        if 'branding' in parsed.fragment:
+            return False
+        if 'comments' in parsed.fragment:
             return False
         if 'ics.uci.edu' not in parsed.netloc:
             if 'cs.uci.edu' not in parsed.netloc:
