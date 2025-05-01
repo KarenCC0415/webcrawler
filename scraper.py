@@ -71,6 +71,8 @@ def is_valid(url):
             return False
         if 'share=' in parsed.query:
             return False
+        if 'from=' in parsed.query:
+            return False
         if 'login.php' in parsed.path:
             return False
         if 'respond' in parsed.fragment:
@@ -93,6 +95,12 @@ def is_valid(url):
             return False
         if 'Nanda/seminar' in parsed.path:  # trap that kept adding to path like this Nanda/seminar/Nanda/seminar.. etc
             return False
+        if 'seminar/Nanda' in parsed.path:
+            return False
+        if 'EMWS09' in parsed.path:
+            return False
+        if parsed.fragment != "":
+            return False
         if 'ics.uci.edu' not in parsed.netloc:
             if 'cs.uci.edu' not in parsed.netloc:
                 if 'informatics.uci.edu' not in parsed.netloc:
@@ -106,8 +114,8 @@ def is_valid(url):
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1|php|py"
-            + r"|thmx|mso|arff|rtf|jar|csv"
+            + r"|epub|dll|cnf|tgz|sha1|php|py|sql|war|xml"
+            + r"|thmx|mso|arff|rtf|jar|csv|cp|h|git|ppsx|cs"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except TypeError:
