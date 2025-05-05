@@ -4,6 +4,10 @@ from bs4 import BeautifulSoup
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
+
+    for link in links:
+        process_url(link)
+
     return [link for link in links if is_valid(link)]
 
 def extract_next_links(url, resp):
@@ -109,8 +113,8 @@ def is_valid(url):
                             return False
         
         return not re.match(
-            r".*\.(css|js|bmp|gif|jpe?g|ico"
-            + r"|png|tiff?|mid|mp2|mp3|mp4"
+            r".*\.(css|js|bmp|gif|jpe?g|ico|conf|java"
+            + r"|png|tiff?|mid|mp2|mp3|mp4|git"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
@@ -121,3 +125,16 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
+
+def process_url(url):
+    # Normalize: remove fragment
+    parsed = urlparse(url)
+    url_no_fragment = parsed._replace(fragment="").geturl()
+    
+    # Add to unique URLs
+    unique_urls.add(url_no_fragment)
+
+    # Extract subdomain (e.g., 'vision.ics.uci.edu')
+    netloc = parsed.netloc.lower()
+    if netloc.endswith(".ics.uci.edu"):
+        subdomain_counts[netloc] += 1
