@@ -4,8 +4,6 @@ from collections import defaultdict, Counter
 from bs4 import BeautifulSoup
 import urllib.request
 
-
-# Store unique URLs and subdomain counts
 unique_urls = set()
 subdomain_counts = defaultdict(int)
 longest_page_url = ""
@@ -46,10 +44,8 @@ def parseWords(words):
             word_counter.update([word])
         #word_counter = word_counter.most_common(5000)
 
-def process_url(url):
-    # finds longest page in terms of # of words
-    
-    #global longest_page_url, longest_page_numWords
+def process_url(url):    
+    global longest_page_url, longest_page_numWords
     words = getWordsInUrl(url)
     numWordsInUrl = len(words)
 
@@ -59,14 +55,14 @@ def process_url(url):
     
     parseWords(words)
 
-    # Normalize: remove fragment
+    # remove fragment
     parsed = urlparse(url)
     url_no_fragment = parsed._replace(fragment="").geturl()
     
-    # Add to unique URLs
+    # add to unique urls
     unique_urls.add(url_no_fragment)
 
-    # Extract subdomain (e.g., 'vision.ics.uci.edu')
+    # get subdomain and add to count
     netloc = parsed.netloc.lower()
     if netloc.endswith("uci.edu"):
         subdomain_counts[netloc] += 1

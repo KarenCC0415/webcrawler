@@ -5,12 +5,12 @@ from process_results import process_url
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
+    process_url(url)
 
     valid_links = []
     for link in links:
         if is_valid(link):
             valid_links.append(link)
-            process_url(link)
 
     return valid_links
 
