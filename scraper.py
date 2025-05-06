@@ -1,6 +1,7 @@
 import re
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
+from process_results
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -125,16 +126,3 @@ def is_valid(url):
     except TypeError:
         print ("TypeError for ", parsed)
         raise
-
-def process_url(url):
-    # Normalize: remove fragment
-    parsed = urlparse(url)
-    url_no_fragment = parsed._replace(fragment="").geturl()
-    
-    # Add to unique URLs
-    unique_urls.add(url_no_fragment)
-
-    # Extract subdomain (e.g., 'vision.ics.uci.edu')
-    netloc = parsed.netloc.lower()
-    if netloc.endswith(".ics.uci.edu"):
-        subdomain_counts[netloc] += 1
