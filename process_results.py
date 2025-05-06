@@ -13,6 +13,9 @@ longest_page_numWords = 0
 word_counter = Counter()
 stop_words = set()
 
+with open("stop_words.txt", "r") as f:
+    stop_words = {line.strip() for line in f if line.strip()}
+
 def getWordsInUrl(url):
     try:
         with urllib.request.urlopen(url) as resp:
@@ -46,7 +49,7 @@ def parseWords(words):
 def process_url(url):
     # finds longest page in terms of # of words
     
-    global longest_page_url, longest_page_numWords
+    #global longest_page_url, longest_page_numWords
     words = getWordsInUrl(url)
     numWordsInUrl = len(words)
 
@@ -67,20 +70,17 @@ def process_url(url):
     netloc = parsed.netloc.lower()
     if netloc.endswith("uci.edu"):
         subdomain_counts[netloc] += 1
+    
+    save_results()
 
+def save_results():
+    output = {
+        "unique_pages": list(unique_urls),
+        "subdomain_counts": dict(subdomain_counts),
+        "longest_page_url": longest_page_url,
+        "longest_page_numWords": longest_page_numWords,
+        "top_50_words": word_counter.most_common(50)
+    }
 
-# After crawling, prepare JSON object
-output = {
-    "unique_pages": list(unique_urls),
-    "subdomain_counts": dict(subdomain_counts),
-    "longest_page_url": longest_page_url,
-    "longest_page_numWords": longest_page_numWords,
-    "top_50_words": word_counter.most_common(50)
-}
-
-# Save to JSON file (optional)
-with open("results.json", "w") as f:
-    json.dump(output, f, indent=2)
-
-with open("stop_words.txt", "r") as f:
-    stop_words = {line.strip() for line in f if line.strip()}
+    with open("results.json", "w") as f:
+        json.dump(output, f, indent=2)
