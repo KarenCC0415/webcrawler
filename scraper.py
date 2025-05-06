@@ -1,15 +1,18 @@
 import re
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
-from process_results
+from process_results import process_url
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
 
+    valid_links = []
     for link in links:
-        process_url(link)
+        if is_valid(link):
+            valid_links.append(link)
+            process_url(link)
 
-    return [link for link in links if is_valid(link)]
+    return valid_links
 
 def extract_next_links(url, resp):
     # Implementation required.

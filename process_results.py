@@ -13,9 +13,6 @@ longest_page_numWords = 0
 word_counter = Counter()
 stop_words = set()
 
-with open("stop_words.txt", "r") as f:
-    stop_words = {line.strip() for line in f if line.strip()}
-
 def getWordsInUrl(url):
     try:
         with urllib.request.urlopen(url) as resp:
@@ -84,3 +81,6 @@ output = {
 # Save to JSON file (optional)
 with open("results.json", "w") as f:
     json.dump(output, f, indent=2)
+
+with open("stop_words.txt", "r") as f:
+    stop_words = {line.strip() for line in f if line.strip()}
