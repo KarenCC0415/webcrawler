@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import nltk
 from nltk.corpus import stopwords
 
+totalNumLinks = 0
 unique_urls = set()
 subdomain_counts = defaultdict(int)
 longest_page_url = ""
@@ -47,6 +48,8 @@ def parseWords(words):
         #word_counter = word_counter.most_common(5000)
 
 def process_url(url, resp):    
+    totalNumLinks += 1
+
     global longest_page_url, longest_page_numWords
     words = getWordsInUrl(url,resp)
     numWordsInUrl = len(words)
@@ -74,10 +77,12 @@ def process_url(url, resp):
 def save_results():
     output = {
         "unique_pages": list(unique_urls),
-        "subdomain_counts": dict(subdomain_counts),
+        "number_of_unique_pages": len(unique_urls),
+        "subdomain_counts": dict(sorted(subdomain_counts.items())),
         "longest_page_url": longest_page_url,
         "longest_page_numWords": longest_page_numWords,
         "top_50_words": word_counter.most_common(50)
+
     }
 
     with open("results.json", "w") as f:

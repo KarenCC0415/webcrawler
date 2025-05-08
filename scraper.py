@@ -71,6 +71,10 @@ def is_valid(url):
             return False
         if re.search(r'(calendar|date|year=\d{4}|month=\d{1,2})', url.lower()):
             return False
+        if "ical=" in parsed.query:
+            return False
+        if "format=" in parsed.query:   #too many 122b zip files look like this
+            return False
         if url.count('=') > 3:
             return False
         if 'uci.zoom.us' in parsed.netloc:
@@ -80,6 +84,8 @@ def is_valid(url):
         if 'share=' in parsed.query:
             return False
         if 'from=' in parsed.query:
+            return False
+        if "login" in parsed.path:
             return False
         if 'login.php' in parsed.path:
             return False
@@ -111,6 +117,8 @@ def is_valid(url):
             return False
         if parsed.fragment != "":
             return False
+        if "zip-attachment" in parsed.path: 
+            return False
         if 'ics.uci.edu' not in parsed.netloc:
             if 'cs.uci.edu' not in parsed.netloc:
                 if 'informatics.uci.edu' not in parsed.netloc:
@@ -119,12 +127,12 @@ def is_valid(url):
                             return False
         
         return not re.match(
-            r".*\.(css|js|bmp|gif|jpe?g|ico|conf|java"
-            + r"|png|tiff?|mid|mp2|mp3|mp4|git"
+            r".*\.(css|js|bmp|gif|jpe?g|ico|conf|java|lif"
+            + r"|png|tiff?|mid|mp2|mp3|mp4|git|sh|apk|nb"
             + r"|wav|avi|mov|mpeg|ram|m4v|mkv|ogg|ogv|pdf"
             + r"|ps|eps|tex|ppt|pptx|doc|docx|xls|xlsx|names"
             + r"|data|dat|exe|bz2|tar|msi|bin|7z|psd|dmg|iso"
-            + r"|epub|dll|cnf|tgz|sha1|php|py|sql|war|xml"
+            + r"|epub|dll|cnf|tgz|sha1|php|py|sql|war|xml|mpg"
             + r"|thmx|mso|arff|rtf|jar|csv|cp|h|git|ppsx|cs|ppt|pptx|ppsx"
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
