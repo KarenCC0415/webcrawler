@@ -26,6 +26,9 @@ def getWordsInUrl(url,resp):
                 curr_word += char
             else:
                 if curr_word:
+                    if len(curr_word) < 3:
+                        curr_word = ""
+                        continue
                     words.append(curr_word.lower())
                     curr_word = ""
         if curr_word:

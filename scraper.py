@@ -5,7 +5,6 @@ from process_results import process_url
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
-    process_url(url, resp)
 
     valid_links = []
     for link in links:
@@ -30,6 +29,7 @@ def extract_next_links(url, resp):
         return links
     
     try:
+        process_url(url, resp)
         content = resp.raw_response.content
         soup = BeautifulSoup(content, "html.parser")
 
