@@ -2,51 +2,50 @@ from urllib.parse import urlparse
 import json
 from collections import defaultdict, Counter
 from bs4 import BeautifulSoup
-import urllib.request
+import nltk
+from nltk.corpus import stopwords
 
 unique_urls = set()
 subdomain_counts = defaultdict(int)
 longest_page_url = ""
 longest_page_numWords = 0
 word_counter = Counter()
-stop_words = set()
 
-with open("stop_words.txt", "r") as f:
-    stop_words = {line.strip() for line in f if line.strip()}
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english'))
 
-def getWordsInUrl(url):
+def getWordsInUrl(url,resp):
     try:
-        with urllib.request.urlopen(url) as resp:
-            html = resp.read()
-            soup = BeautifulSoup(html, "html.parser")
-            text = soup.get_text()
-
-            words = []
-            curr_word = ""
-            for char in text:
-                if char.isalnum() and char.isascii():
-                    curr_word += char
-                else:
-                    if curr_word:
-                        words.append(curr_word.lower())
-                        curr_word = ""
-            if curr_word:
-                words.append(curr_word.lower())
-
-            return words
+        content = resp.raw_response.content
+        soup = BeautifulSoup(content, "html.parser")
+        text = soup.get_text(separator=' ', strip = True)
+        words = []
+        curr_word = ""
+        for char in text:
+            if char.isalnum() and char.isascii():
+                curr_word += char
+            else:
+                if curr_word:
+                    words.append(curr_word.lower())
+                    curr_word = ""
+        if curr_word:
+            words.append(curr_word.lower())
+        return words
     except Exception as e:
-        print(f"Error processing {url}: {e}")
+        #print(f"Error processing {url}: {e}")
         return []
 
 def parseWords(words):
     for word in words:
         if word not in stop_words:
             word_counter.update([word])
+
+        
         #word_counter = word_counter.most_common(5000)
 
-def process_url(url):    
+def process_url(url, resp):    
     global longest_page_url, longest_page_numWords
-    words = getWordsInUrl(url)
+    words = getWordsInUrl(url,resp)
     numWordsInUrl = len(words)
 
     if longest_page_numWords < numWordsInUrl:
