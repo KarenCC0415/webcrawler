@@ -105,6 +105,8 @@ def is_valid(url):
             return False
         if 'seminar/Nanda' in parsed.path:
             return False
+        if 'plrg' in parsed.netloc:
+            return False
         if 'EMWS09' in parsed.path:
             return False
         if parsed.fragment != "":
