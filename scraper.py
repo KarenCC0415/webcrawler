@@ -79,6 +79,8 @@ def is_valid(url):
             return False
         if 'uci.zoom.us' in parsed.netloc:
             return False
+        if "uploads" in parsed.path:
+            return False
         if 'action=' in parsed.query:
             return False
         if 'share=' in parsed.query:
@@ -114,8 +116,6 @@ def is_valid(url):
         if 'plrg' in parsed.netloc:
             return False
         if 'EMWS09' in parsed.path:
-            return False
-        if parsed.fragment != "":   # messes up w count of urls, so prob want to get rid of this 
             return False
         if "zip-attachment" in parsed.path: 
             return False
