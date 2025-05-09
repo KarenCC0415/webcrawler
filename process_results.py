@@ -48,9 +48,9 @@ def parseWords(words):
         #word_counter = word_counter.most_common(5000)
 
 def process_url(url, resp):    
+    global longest_page_url, longest_page_numWords, totalNumLinks
     totalNumLinks += 1
 
-    global longest_page_url, longest_page_numWords
     words = getWordsInUrl(url,resp)
     numWordsInUrl = len(words)
 
@@ -81,7 +81,8 @@ def save_results():
         "subdomain_counts": dict(sorted(subdomain_counts.items())),
         "longest_page_url": longest_page_url,
         "longest_page_numWords": longest_page_numWords,
-        "top_50_words": word_counter.most_common(50)
+        "top_50_words": word_counter.most_common(50),
+        "total_num_links": totalNumLinks
 
     }
 

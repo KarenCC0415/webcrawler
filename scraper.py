@@ -115,7 +115,7 @@ def is_valid(url):
             return False
         if 'EMWS09' in parsed.path:
             return False
-        if parsed.fragment != "":
+        if parsed.fragment != "":   # messes up w count of urls, so prob want to get rid of this 
             return False
         if "zip-attachment" in parsed.path: 
             return False
