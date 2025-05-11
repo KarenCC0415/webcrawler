@@ -48,6 +48,8 @@ def extract_next_links(url, resp):
         for link in soup.find_all("a", href = True):
             href = link["href"]
             url = urljoin(resp.url, href)
+            url = urlparse(url)
+            url = url._replace(fragment="").geturl()
             if is_valid(url):
                 links.append(url)
     
